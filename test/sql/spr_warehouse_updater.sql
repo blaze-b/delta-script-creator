@@ -1,4 +1,4 @@
-create or replace procedure ico_mea_stg.spr_warehouse_updater(
+create or replace procedure ico_me_stg.spr_warehouse_updater(
     pio_err in out nocopy varchar2 )
 is
 begin
