@@ -1,9 +1,6 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.lang.System.in;
@@ -43,8 +40,8 @@ public class Delta {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        List<String> files = getAllFiles(path);
-        System.out.println("Files details from the path = " + files);
+        List<String> files = FileUtils.getAllFiles(path);
+        //System.out.println("Files details from the path = " + files);
         StringBuilder driverFileContent = new StringBuilder("" + NEWLINE
                 + "spool  ICODBUPDATE_.log" + NEWLINE
                 + "SET SQLBLANKLINES ON;" + NEWLINE
@@ -73,8 +70,6 @@ public class Delta {
                 .append(NEWLINE).append("select object_name, object_type from user_objects where status='INVALID';")
                 .append(NEWLINE).append("SET SQLBLANKLINES OFF;")
                 .append(NEWLINE).append("spool off;");
-
-        System.out.println(driverFileContent);
         try {
             PrintWriter writer = new PrintWriter(path + "/driver.sql", "UTF-8");
             writer.print(driverFileContent);
@@ -84,43 +79,5 @@ public class Delta {
         }
     }
 
-    public static List<String> getAllFiles(String path) {
-        List<String> files = getFiles(path);
-        List<String> directories = getDirectories(path);
-        Collections.sort(directories);
-        for (String directory : directories) {
-            files.addAll(getAllFiles(path + "/" + directory));
-        }
-        return files;
-    }
-
-    public static List<String> getFiles(String path) {
-        File folder = new File(path);
-        File[] listOfFiles = folder.listFiles();
-        List<String> retList = new ArrayList<>();
-        if (listOfFiles != null) {
-            for (int i = 0; i < listOfFiles.length; i++) {
-                if (listOfFiles[i].isFile()) {
-                    retList.add(path + "/" + listOfFiles[i].getName());
-                }
-            }
-        }
-
-        return retList;
-    }
-
-    public static List<String> getDirectories(String path) {
-        File folder = new File(path);
-        File[] listOfFiles = folder.listFiles();
-        List<String> retList = new ArrayList<>();
-        if (listOfFiles != null) {
-            for (int i = 0; i < listOfFiles.length; i++) {
-                if (listOfFiles[i].isDirectory()) {
-                    retList.add(listOfFiles[i].getName());
-                }
-            }
-        }
-        return retList;
-    }
 
 }
